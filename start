@@ -98,10 +98,10 @@ function process_args() {
     ;;
   	testnet2)
       export NETWORK_PASSPHRASE="Pi Testnet"
-      export HISTORY_ARCHIVE_URLS="https://validator1.testnet2.minepi.com:31403/"
+      export HISTORY_ARCHIVE_URLS="https://history.testnet2.minepi.com/"
       ;;
 	pubnet)
-    export NETWORK_PASSPHRASE="Public Pi Network is not launched ; Coming soon"
+    export NETWORK_PASSPHRASE="Pi Network"
     export HISTORY_ARCHIVE_URLS="http://mainnet-history.minepi.com:31403"
     ;;
 	standalone)
