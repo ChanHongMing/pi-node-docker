@@ -60,7 +60,7 @@ function process_args() {
 	  --testnet2)
 	    NETWORK="testnet2"
 	    ;;
-	  --pubnet)
+	  --mainnet)
 	    NETWORK="pubnet"
 	    ;;
 	  --standalone)
@@ -286,7 +286,7 @@ function init_stellar_core() {
 
 	run_silent "init-core-db" sudo -u stellar stellar-core new-db --conf etc/stellar-core.cfg
 
-	if [ "$NETWORK" == "testnet2" ]; then
+	if [ "$NETWORK" == "pubnet" ]; then
 		run_silent "init-core-scp" sudo -u stellar stellar-core force-scp --conf etc/stellar-core.cfg
 
 		mkdir -p "$HISTHOME"
