@@ -304,36 +304,46 @@ function init_stellar_core() {
 }
 
 function init_horizon() {
+	local ALREADY_INITIALIZED=false
 	if [ -f $HZHOME/.quickstart-initialized ]; then
 		echo "horizon: already initialized"
-		return 0
+		ALREADY_INITIALIZED=true
 	fi
+
 	pushd $HZHOME
 
-	run_silent "chown-horizon" chown stellar:stellar .
+	if [ "$ALREADY_INITIALIZED" = "false" ]; then
+		run_silent "chown-horizon" chown stellar:stellar .
 
-	sed -ri \
-		-e "s/__PGPASS__/$PGPASS/g" \
-		-e "s/__NETWORK__/$NETWORK_PASSPHRASE/g" \
-		-e "s=__ARCHIVE__=$HISTORY_ARCHIVE_URLS=g" \
-		etc/horizon.env
+		sed -ri \
+			-e "s/__PGPASS__/$PGPASS/g" \
+			-e "s/__NETWORK__/$NETWORK_PASSPHRASE/g" \
+			-e "s=__ARCHIVE__=$HISTORY_ARCHIVE_URLS=g" \
+			etc/horizon.env
 
-	if [ "$ENABLE_HORIZON_CAPTIVE_CORE" = "true" ]; then
-	  cat << EOF >> etc/horizon.env
+		if [ "$ENABLE_HORIZON_CAPTIVE_CORE" = "true" ]; then
+		  cat << EOF >> etc/horizon.env
 export ENABLE_CAPTIVE_CORE_INGESTION=true
 export STELLAR_CORE_BINARY_PATH=/usr/bin/stellar-core
 export STELLAR_CORE_CONFIG_PATH=/opt/stellar/core/etc/stellar-captive-core.cfg
 EOF
+		fi
+
+		start_postgres
+		run_silent "init-horizon-db" sudo -u stellar ./bin/horizon db init
+		if [ "$NETWORK" == "standalone" ]; then
+			# init-genesis-state command has not been released yet so ignore error and remove `|| true` later.
+			run_silent "init-genesis-state" sudo -u stellar ./bin/horizon ingest init-genesis-state
+		fi
+
+		touch .quickstart-initialized
 	fi
 
-	start_postgres
-	run_silent "init-horizon-db" sudo -u stellar ./bin/horizon db init
-	if [ "$NETWORK" == "standalone" ]; then
-		# init-genesis-state command has not been released yet so ignore error and remove `|| true` later.
-		run_silent "init-genesis-state" sudo -u stellar ./bin/horizon ingest init-genesis-state
+	# Verify APPLY_MIGRATIONS=true is present in horizon.env, add if missing
+	if ! grep -q "^export APPLY_MIGRATIONS=true" etc/horizon.env; then
+		echo "export APPLY_MIGRATIONS=true" >> etc/horizon.env
 	fi
 
-	touch .quickstart-initialized
 	popd
 }
 
