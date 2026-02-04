@@ -8,14 +8,6 @@ echo "deb https://apt.stellar.org focal unstable" >/etc/apt/sources.list.d/SDF-u
 apt-get update
 apt-get install -y stellar-core=${STELLAR_CORE_VERSION}
 apt-get install -y stellar-horizon=${HORIZON_VERSION}
+apt-get install -y stellar-archivist
 apt-get clean
-echo "\nDone installing stellar-core and horizon...\n"
-
-
-curl -L -O https://go.dev/dl/go1.23.2.linux-amd64.tar.gz
-tar -C /usr/local -xzf go1.23.2.linux-amd64.tar.gz
-rm  go1.23.2.linux-amd64.tar.gz
-go install github.com/stellar/go/tools/stellar-archivist@latest
-echo "\nDone installing stellar-archivist\n"
-
-
+echo "\nDone installing stellar-core, horizon, and stellar-archivist\n"
