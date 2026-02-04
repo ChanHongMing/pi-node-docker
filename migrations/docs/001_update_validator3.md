@@ -7,8 +7,10 @@
 
 ## What This Migration Does
 
-This migration updates your Stellar node to use the new **validator3** server. Here's what changes:
+This migration updates your Stellar node to use the new **validator3** server.
+If you started your node from 19.6.0 image, you can skip this migration.
 
+Here's what changes:
 1. **Replaces the placeholder validator** - Changes "doesnotexistyet" to the real "validator3" with correct keys and address
 2. **Adds validator3 to your trusted peers** - So your node knows to connect to it
 3. **Switches to CDN for history** - Updates validator1 and validator2 to use faster HTTPS CDN URLs
@@ -256,7 +258,7 @@ The script does everything above automatically and is **idempotent** (safe to ru
 ## Questions?
 
 - **Can I run this multiple times?** Yes! The migration checks if changes are already applied.
-- **Will this cause downtime?** Brief downtime during service restart (a few seconds).
+- **Will this cause downtime?** Brief downtime during service restart (a few seconds/minutes).
 - **What if stellar-core won't start?** Check logs: `tail -f /opt/stellar/core/stellar-core.log`
 - **Can I skip the Horizon migration?** Only if you're not using Horizon.
 
