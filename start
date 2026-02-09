@@ -35,6 +35,7 @@ function main() {
 	init_horizon
 	copy_pgpass
 
+    stop_postgres
 	# run migrations if enabled (postgres is still running here)
 	run_migrations
 
